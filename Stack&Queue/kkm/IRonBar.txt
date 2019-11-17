@@ -1,0 +1,44 @@
+import java.util.Stack;
+import java.util.*;
+import java.util.ArrayList;
+
+class Solution {
+    public int solution(String arrangement) {
+        //쇠막대기 시작 위치 저장
+        Stack<Integer> startPoint = new Stack<Integer>(); 
+        //레이저 위치 저장
+        ArrayList<Integer> lager = new ArrayList<Integer>();
+        //문자열을 Character 배열로 변환
+        char[] charArray = arrangement.toCharArray();
+        
+        int answer = 0;
+        
+        for(int i = 0 ; i < charArray.length - 1; i++){
+            // '((' 연달아 나오면 앞의 '('는 막대기 시작 지점
+            if(charArray[i] == '(' && charArray[i+1] == '('){
+                startPoint.push(i);
+            }
+            // '()' 해당 문자가 연달아 나오면 레이저 위치
+            if(charArray[i] == '(' && charArray[i+1] == ')'){
+                lager.add(i);
+            }
+            // '))' 해당 문자가 연달아 나올때 닫히는 지점(end)이고 그 순간
+            //스타트 지점에서 마지막에 넣어던 위치를 이용하여 
+            //start 와 end 지점 사이에 있는 레이저의 수를 구한다.
+            //여기서 'start 와 end 위치 사이에 위치한 레이저 수 + 1'이
+            //해당 쇠막대기를 레이저로 조각 냈을 때의 조각 수다.
+            if(charArray[i] == ')' && charArray[i+1] == ')'){
+                int start = startPoint.pop();
+                for(int num : lager){
+                    if(start < num && i+1 > num){
+                        answer++;
+                    }
+                }
+                answer++;
+            }
+        }
+        
+        
+        return answer;
+    }
+}

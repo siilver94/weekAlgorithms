@@ -1,0 +1,38 @@
+class Solution {
+    public int[] solution(int[] prices) {
+        int length = prices.length;
+        int[] answer = new int[length];
+        //가격이 떨어지는 경우가 있으면 True, 없으면 False
+        boolean bFlag = true;
+        
+        for(int i = 0 ; i < length ; i++){
+            //맨마지막 가격은 항상 0
+            if(i == length - 1) {
+                answer[i] = 0;
+                break;
+            }
+            
+            //초기화
+            bFlag = true;
+            
+            //가격이 떨어지는 경우가 있는지 확인하는 구문
+            // (i) 비교하기위한 인덱스
+            // (i + 1) 자기자신 뒤부터 비교하면 되기때문에...
+            for(int j = i + 1 ; j < length ; j ++){
+                //가격이 떨어지는경우가 있으면
+                //return 하려는 초 => 떨어지는 위치의 인덱스 - 현재 위치의 인덱스
+                //이때, bFlag를 False를 주면서 break; 다음 구문 실행하지 않기위해서
+                if(prices[i] > prices[j]){
+                    answer[i] = j - i;
+                    bFlag = false;
+                    break;
+                }
+            }
+            //가격이 떨어지는 기간이 없을 경우
+            //전체 크기 - 현재 위치의 인덱스 - 1
+            if(bFlag) answer[i] = length - i - 1;
+        }
+        
+        return answer;
+    }
+}
