@@ -1,0 +1,83 @@
+import java.io.*;
+
+public class Test2 {
+	
+	public static void main(String[] args) throws NumberFormatException, IOException {
+		// TODO Auto-generated method stub
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		
+		int N = Integer.parseInt( br.readLine());
+		
+		//입력받은 문자열 저장하는 Array
+		String[] sArr = new String[N];
+		//정렬시켜서 저장한 Array
+		String[] storedArr = new String[N];
+		
+		//문자열 길이를 카운팅하여 저장시킨 Array
+		//길이 순서대로 정렬된 Array에서 해당길이에 속한 문자열을 다 비교하기 위해 카운팅 하는 Array 
+		int[] countArr = new int[51];
+		//문자열을 길이 순서대로 저장시키기 위한 Array
+		int[] numArr = new int[51];		
+				
+		int max = 0;
+		String temp = "";
+		
+		for(int i = 0 ; i < N ; i ++) {
+			sArr[i] = br.readLine();			
+			countArr[sArr[i].length()-1]++;
+			
+			if( max < sArr[i].length())
+				max = sArr[i].length();
+		}
+		
+		for(int i = 0; i < N ; i++) {
+			numArr[sArr[i].length()-1]++;
+		}
+		
+		for(int i = 1 ; i <= max ; i++ ) {
+			numArr[i] += numArr[i -1];
+		}
+		
+		//여기서 길이 순서대로 문자열 정렬
+		for(int i = N - 1; i >= 0 ; i--) {
+			storedArr[numArr[sArr[i].length() - 1] - 1] = sArr[i];
+			numArr[sArr[i].length() -1]--;
+		}
+		
+		
+		for(int i = 0 ; i < N ; i++) {
+			//카운팅이 1일경우 그대로 출력
+			if(countArr[storedArr[i].length() - 1] == 1) {				
+				bw.write(storedArr[i] + "\n");
+				bw.flush();
+			}
+			//카운티이 1이 아닐경우 해당길이에 속한 모든 문자열을 비교하기 위한 구문
+			else {
+				//위치는 i부터 해당 길이에 속한 문자열의 수
+				for(int j = i ; j < i + countArr[storedArr[i].length() - 1]; j++) {
+					for(int k = j ; k < i + countArr[storedArr[i].length() - 1]; k++) {
+						//문자열을 비교하여 자리바꾸는 구문
+						if(storedArr[j].compareTo(storedArr[k])>0) {
+							temp = storedArr[j];
+							storedArr[j] = storedArr[k];
+							storedArr[k] = temp;
+						}
+					}
+					//밑에 구문을 돌리기 위한 조건문
+					if(j == 0) {
+						bw.write(storedArr[j] + "\n");
+						bw.flush();
+					}
+					//같은 문자열을 출력하지 않기 위한 구문
+					else if(!storedArr[j].equals(storedArr[j-1])) {
+						bw.write(storedArr[j] + "\n");
+						bw.flush();
+					}					
+				}
+				//해당 카운팅만큼 출력했으니 그만큼 플러스시켜서 진행
+				i += countArr[storedArr[i].length() - 1] -1;
+			}			
+		}		
+	}
+}
